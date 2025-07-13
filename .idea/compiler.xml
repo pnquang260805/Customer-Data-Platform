@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.38/57f8f5e02e92a30fd21b80cbd426a4172b5f8e29/lombok-1.18.38.jar" />
+        </processorPath>
+        <module name="CDP-java.batch.main" />
+        <module name="CDP-java.message.main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="11">
+      <module name="batchservice" target="17" />
+      <module name="batchservice.main" target="17" />
+      <module name="batchservice.test" target="17" />
+      <module name="CDP-java.batchservice" target="17" />
+      <module name="CDP-java.batchservice.main" target="17" />
+      <module name="CDP-java.batchservice.test" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="CDP-java" options="-parameters" />
+      <module name="CDP-java.batch" options="-parameters" />
+      <module name="CDP-java.batch.main" options="-parameters" />
+      <module name="CDP-java.batch.test" options="-parameters" />
+      <module name="CDP-java.batchservice" options="-parameters" />
+      <module name="CDP-java.batchservice.main" options="-parameters" />
+      <module name="CDP-java.batchservice.test" options="-parameters" />
+      <module name="CDP-java.main" options="-parameters" />
+      <module name="CDP-java.message" options="-parameters" />
+      <module name="CDP-java.message.main" options="-parameters" />
+      <module name="CDP-java.message.test" options="-parameters" />
+      <module name="CDP-java.test" options="-parameters" />
+      <module name="batch" options="-parameters" />
+      <module name="batch.main" options="-parameters" />
+      <module name="batch.test" options="-parameters" />
+      <module name="batchservice" options="-parameters" />
+      <module name="batchservice.main" options="-parameters" />
+      <module name="batchservice.test" options="-parameters" />
+      <module name="message" options="-parameters" />
+      <module name="message.main" options="-parameters" />
+      <module name="message.test" options="-parameters" />
+    </option>
+  </component>
+</project>

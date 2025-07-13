@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Fix lỗi conflict log giữa spring và aws
+configurations {
+    all {
+        exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+        exclude group: 'org.slf4j', module: 'slf4j-nop'
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
+    implementation("org.glassfish.jersey.containers:jersey-container-servlet:3.1.5")
+
+    // Spark
+    implementation("org.apache.spark:spark-core_2.12:3.5.6")
+    implementation("org.apache.spark:spark-sql_2.12:3.5.6")
+
+    // S3
+    // Trong image bitnami, các thư viện này đều là 3.3.4
+    implementation("org.apache.hadoop:hadoop-common:3.3.4")
+    implementation("org.apache.hadoop:hadoop-aws:3.3.4")
+}
+
+springBoot {
+    mainClass = 'com.batch.batch.BatchApplication'
+}
+tasks.named('bootRun') {
+    jvmArgs = [
+            '--add-opens=java.base/sun.nio.ch=ALL-UNNAMED'
+    ]
+}
