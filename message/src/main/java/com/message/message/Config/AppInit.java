@@ -21,7 +21,7 @@ public class AppInit implements ApplicationRunner {
         log.info("AppInit started, checking topics...");
         String bootstrap = "localhost:9094";
 
-        List<String> topics = Arrays.asList("order", "product", "customer");
+        List<String> topics = Arrays.asList("order", "product", "customer", "category");
         for(String topic : topics){
             if(!kafkaService.topicExisted(topic, bootstrap)){
                 kafkaService.createTopic(topic, 3, (short)1, bootstrap);

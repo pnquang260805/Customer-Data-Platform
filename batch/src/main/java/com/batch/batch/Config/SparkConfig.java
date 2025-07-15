@@ -1,6 +1,5 @@
 package com.batch.batch.Config;
 
-//import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,10 +27,6 @@ public class SparkConfig {
                 .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false")
                 .config("spark.hadoop.fs.s3a.access.key", ACCESS_KEY)
                 .config("spark.hadoop.fs.s3a.secret.key", SECRET_KEY)
-//                .config("spark.hadoop.fs.s3a.connection.timeout", "60000")
-//                .config("spark.hadoop.fs.s3a.connection.establish.timeout", "60000")
-//                .config("spark.hadoop.fs.s3a.retry.interval", "30000")
-//                .config("spark.hadoop.fs.s3a.connection.maximum", "100")
                 .getOrCreate();
         return spark;
     }

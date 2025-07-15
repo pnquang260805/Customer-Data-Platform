@@ -1,28 +1,30 @@
-package com.message.message.DTO;
+package com.message.message.Entity;
 
 import lombok.Builder;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Document
 public class Customer {
     @JsonProperty("customerId")
+    @Id
     private String customerId;
-
-    @JsonProperty("name")
     private String name;
-
-    @JsonProperty("address")
-    private String address;
-
-    @JsonProperty("dob")
+    private String email;
+    private String addressLine1;
+    private String addressLine2;
     private String dob;
-
-    @JsonProperty("sex")
     private String sex;
+    private String country;
+    private String cartId;
 }
