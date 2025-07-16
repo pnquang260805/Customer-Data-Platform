@@ -14,19 +14,6 @@ public class SparkService {
     @Autowired
     private SparkSession spark;
 
-//    @Scheduled(fixedDelay = 10000)
-//    public void readFile(){
-//        String schema = "customerId STRING, name STRING, email STRING, addressLine1 STRING,addressLine2 STRING, dob STRING, country STRING, sex STRING";
-//
-//        String url = "s3a://raw/customer/*.json";
-//        System.out.println("Reading from URL: " + url);
-//        Dataset<Row> df = spark.read()
-//                .format("json")
-//                .option("header", "true")
-//                .schema(schema)
-//                .load(url);
-//        df.show(5, false);
-//    }
     public Dataset<Row> readFile(String url, String schema, String format){
         log.info("Calling readFile");
         return spark.read()
