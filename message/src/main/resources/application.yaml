@@ -1,14 +1,6 @@
 spring:
   application:
     name: message
-  data:
-    mongodb:
-      authentication-database: admin
-      database: ecom
-      username: mongo
-      password: mongo
-      host: localhost
-      port: 27017
 server:
   port: 8090
 logging:
