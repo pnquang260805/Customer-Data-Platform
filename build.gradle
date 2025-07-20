@@ -21,7 +21,7 @@ configurations {
         exclude group: 'org.slf4j', module: 'slf4j-reload4j'
         exclude group: 'org.slf4j', module: 'slf4j-nop'
         exclude group: 'commons-logging', module: 'commons-logging'
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+//        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
         exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
     }
 }

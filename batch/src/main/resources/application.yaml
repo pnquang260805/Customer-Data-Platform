@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: batch
+key:
+  s3:
+    secret: minio1234@abc
+    access: minio
+s3:
+  endpoint: http://localhost:9000
+others:
+  host: 192.168.0.102
+logging:
+  console:
+    enabled: true
+  file:
+    name: ../log/batch.log
