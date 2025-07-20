@@ -1,12 +1,10 @@
 package com.batch.batch.Transform;
 
-import com.batch.batch.Service.S3Service;
 import com.batch.batch.Service.SparkService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.api.java.UDF1;
-import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.DataTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import static org.apache.spark.sql.functions.*;
 
 import com.batch.batch.Utils.CountryNameLUT;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -29,16 +28,29 @@ public class CustomerTransform {
     @Autowired
     private CountryNameLUT countryNameLUT;
     @Autowired
-    private S3Service s3Service;
+    private WebClient webClient;
 
-    @Scheduled(cron = "0 0 * * * ?")
+        @Scheduled(cron = "0 0 * * * ?")
     public void customerToSilver() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
-
         try {
             String schema = "customerId STRING, name STRING, email STRING, addressLine1 STRING,addressLine2 STRING, dob STRING, country STRING, sex STRING";
-            if (!s3Service.checkFolderExists("raw", "customer/" + yesterday.toString())) {
-                System.out.println(yesterday.toString() + " does not have new customer");
+
+            String prefix = "customer/" + yesterday.toString();
+            String bucketName = "raw";
+
+            String fullPath = "http://localhost:8083/api/s3/check-prefix?bucket=" + bucketName + "&prefix=" + prefix;
+            Boolean prefixExist = webClient.get()
+                    .uri(fullPath)
+
+                    .retrieve()
+                    .bodyToMono(Boolean.class)
+                    .block();
+
+            System.out.println(prefixExist);
+
+            if (Boolean.FALSE.equals(prefixExist)) {
+                log.info(yesterday.toString() + " does not have new customer");
                 return;
             }
 

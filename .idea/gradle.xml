@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/batch" />
             <option value="$PROJECT_DIR$/message" />
+            <option value="$PROJECT_DIR$/s3" />
           </set>
         </option>
       </GradleProjectSettings>
@@ -31,6 +32,15 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/message" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/s3" />
+        <option name="gradleJvm" value="#JAVA_HOME" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/s3" />
           </set>
         </option>
       </GradleProjectSettings>

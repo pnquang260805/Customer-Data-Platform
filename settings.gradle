@@ -4,4 +4,4 @@ plugins {
 }
 
 rootProject.name = 'CDP-java'
-include('message', 'batch')
+include('message', 'batch', 's3')

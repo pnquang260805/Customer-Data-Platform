@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: s3
+server:
+  port: 8083
+s3:
+  secret: minio1234@abc
+  access: minio
+others:
+  host: 192.168.0.102
+logging:
+  file:
+    name: ../log/s3.log
