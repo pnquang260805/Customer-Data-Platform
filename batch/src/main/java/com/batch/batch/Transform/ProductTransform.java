@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.batch.batch.Options.SaveFileOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,7 @@ public class ProductTransform {
 
     @Scheduled(fixedDelay = 5000)
     public void productToSilver() {
-        // LocalDate yesterday = LocalDate.now().minusDays(1);
-        log.error("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-        LocalDate yesterday = LocalDate.now();
+         LocalDate yesterday = LocalDate.now().minusDays(1);
         String prefix = "product/" + yesterday.toString();
         String bucketName = "bronze";
 
@@ -47,12 +46,12 @@ public class ProductTransform {
         }
 
         String bronzeUrl = "s3a://bronze/product/" + yesterday.toString() + "/*.json";
-        String destinationUrl = "s3a://silver/product/" + yesterday.toString();
+        String destinationUrl = "s3a://silver/product_" + yesterday.toString();
 
         String schema = "productId STRING, productName STRING, unitPrice DOUBLE, quantityInStock LONG";
 
         Dataset<Row> df = sparkService.readFile(bronzeUrl, schema, "json");
-
+        df = df.drop().dropDuplicates();
         // Drop null productId
         df = df.na().drop("any", new String[]{"productId"});
 
@@ -75,7 +74,11 @@ public class ProductTransform {
         Dataset<Row> afterHandledDF = df.na().fill(fillMap);
         afterHandledDF.show(5, false);
 
-        sparkService.saveFile(afterHandledDF, destinationUrl, "parquet");
-        log.error("AJKBBBBBBBBBBBBBB");
+        sparkService.saveFile(
+                SaveFileOptions.builder()
+                        .url(destinationUrl)
+                        .df(afterHandledDF)
+                        .build()
+        );
     }
 }

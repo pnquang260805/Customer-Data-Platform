@@ -1,5 +1,6 @@
 package com.batch.batch.Service;
 
+import com.batch.batch.Options.SaveFileOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -29,15 +30,17 @@ public class SparkService {
         }
     }
 
-    public void saveFile(Dataset<Row> df, String url, String format){
-        try{
-
-            log.info("start saving");
-            df.write().format(format).mode("Overwrite").option("header", "true").save(url);
-        } catch (Exception e){
-            log.error(e.getMessage());
-            throw new RuntimeException(e);
+    public void saveFile(SaveFileOptions options){
+        var writer = options.getDf().write()
+                .format(options.getFormat())
+                .mode(options.getMode());
+        if(options.getHeader()){
+            writer = writer.option("header", "true");
         }
+        if(options.getPartitionCol() != null){
+            writer = writer.partitionBy(options.getPartitionCol());
+        }
+        writer.save(options.getUrl());
     }
 
     public <K, V> void udfRegistration(String udfName , UDF1<K, V> udf, DataType type){
