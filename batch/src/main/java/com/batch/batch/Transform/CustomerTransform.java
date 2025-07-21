@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import static org.apache.spark.sql.functions.*;
 
 import com.batch.batch.Utils.CountryNameLUT;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -29,30 +28,13 @@ public class CustomerTransform {
     @Autowired
     private CountryNameLUT countryNameLUT;
     @Autowired
-    private WebClient webClient;
 
-    //    @Scheduled(cron = "0 0 * * * ?")
     public void customerToSilver() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         String schema = "customerId STRING, name STRING, email STRING, addressLine1 STRING,addressLine2 STRING, dob STRING, country STRING, sex STRING";
 
-        String prefix = "customer/" + yesterday.toString();
-        String bucketName = "bronze";
-
-        String fullPath = "http://localhost:8083/api/s3/check-prefix?bucket=" + bucketName + "&prefix=" + prefix;
-        Boolean prefixExist = webClient.get()
-                .uri(fullPath)
-                .retrieve()
-                .bodyToMono(Boolean.class)
-                .block();
-
-        if (Boolean.FALSE.equals(prefixExist)) {
-            log.info(yesterday.toString() + " does not have new customer");
-            return;
-        }
-
         String raw_url = "s3a://bronze/customer/" + yesterday.toString() + "/*.json";
-        String destinationUrl = "s3a://silver/customer_" + yesterday.toString() + ".parquet";
+        String destinationUrl = "s3a://silver/customer_" + yesterday.toString();
 
         Dataset<Row> df = sparkService.readFile(raw_url, schema, "json");
 
@@ -88,6 +70,10 @@ public class CustomerTransform {
 
         df = df.na().drop("any", new String[]{"dob"});
         df = df.withColumn("createdDate", lit(yesterday));
+
+        System.out.println("After transform raw df");
+        df.show(5, false);
+
         sparkService.saveFile(
                 SaveFileOptions.builder()
                         .url(destinationUrl)
@@ -97,7 +83,32 @@ public class CustomerTransform {
         );
     }
 
-    public void aggregateCustomer() {
+        public void aggregateCustomer() {
+            LocalDate yesterday = LocalDate.now().minusDays(1);
+            String silverUrl = "s3a://silver/customer_" + yesterday.toString();
 
-    }
+            String schema = "customerId STRING, name STRING, email STRING, addressLine1 STRING,addressLine2 STRING, dob DATE, country STRING, sex STRING, createdDate STRING";
+
+            Dataset<Row> df = sparkService.readFile(silverUrl, schema, "parquet");
+
+            System.out.println("Read silver");
+            df.show(5, false);
+
+            System.out.println("Aggregated");
+            Dataset<Row> groupedDf = df
+                    .groupBy(col("createdDate"))
+                    .agg(count("customerId").alias("numberOfNewCustomer"))
+                    .select(col("createdDate"), col("numberOfNewCustomer"));
+
+            groupedDf.show(5, false);
+
+            String destinationUrl = "s3a://gold/new-customer";
+            sparkService.saveFile(SaveFileOptions.builder()
+                    .mode("Append")
+                    .format("parquet")
+                    .df(groupedDf)
+                    .url(destinationUrl)
+                    .header(true)
+                    .build());
+        }
 }

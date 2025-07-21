@@ -30,6 +30,20 @@ public class SparkService {
         }
     }
 
+    public Dataset<Row> readFile(String url, String format){
+        try{
+            log.info("Calling readFile");
+            return spark.read()
+                    .format(format)
+                    .option("header", "true")
+                    .option("inferSchema", "true")
+                    .load(url);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
     public void saveFile(SaveFileOptions options){
         var writer = options.getDf().write()
                 .format(options.getFormat())

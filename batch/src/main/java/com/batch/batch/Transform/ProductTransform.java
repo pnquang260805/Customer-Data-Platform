@@ -27,7 +27,7 @@ public class ProductTransform {
     @Autowired
     private WebClient webClient;
 
-    @Scheduled(fixedDelay = 5000)
+//    @Scheduled(fixedDelay = 5000)
     public void productToSilver() {
          LocalDate yesterday = LocalDate.now().minusDays(1);
         String prefix = "product/" + yesterday.toString();
@@ -72,7 +72,6 @@ public class ProductTransform {
         fillMap.put("unitPrice", avgPrice);
         fillMap.put("quantityInStock", medQIS);
         Dataset<Row> afterHandledDF = df.na().fill(fillMap);
-        afterHandledDF.show(5, false);
 
         sparkService.saveFile(
                 SaveFileOptions.builder()
